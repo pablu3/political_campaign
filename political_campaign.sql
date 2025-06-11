@@ -123,3 +123,102 @@ CREATE TABLE business.address (
 	postal_code VARCHAR(6) NOT NULL,
 	CHECK (postal_code ~ '^\d{2}-\d{3}$') -- same case as phone number - I know that not every postal code looks like this
 );
+
+
+-- typo correction
+ALTER TABLE business.commission
+RENAME commisstion_name to commission_name; -- So I corrected it here so I don't have to CASCADE and define FKs again
+
+
+-- defining foreign keys, done separately because this is more readable for me 
+ALTER TABLE business.costs_events
+ADD CONSTRAINT event_c_fk FOREIGN KEY (event_id) REFERENCES business.events(event_id);
+
+ALTER TABLE business.costs_events
+ADD CONSTRAINT cost_e_fk FOREIGN KEY (cost_item_id) REFERENCES business.costs(item_id);
+
+ALTER TABLE business.events
+ADD CONSTRAINT commission_e_fk FOREIGN KEY (commission_id) REFERENCES business.commission(commission_id);
+
+ALTER TABLE business.events
+ADD CONSTRAINT place_fk FOREIGN KEY (place_id) REFERENCES business.voting_places(place_id);
+
+ALTER TABLE business.events
+ADD CONSTRAINT status_fk FOREIGN KEY (status_id) REFERENCES business.status(status_id);
+
+ALTER TABLE business.commission_person
+ADD CONSTRAINT commission_p_fk FOREIGN KEY (commission_id) REFERENCES business.commission(commission_id);
+
+ALTER TABLE business.commission_person
+ADD CONSTRAINT person_c_fk FOREIGN KEY (person_id) REFERENCES business.person(person_id);
+
+ALTER TABLE business.person_role
+ADD CONSTRAINT person_r_fk FOREIGN KEY (person_id) REFERENCES business.person(person_id);
+
+ALTER TABLE business.person_role
+ADD CONSTRAINT role_p_fk FOREIGN KEY (role_id) REFERENCES business.roles(role_id);
+
+ALTER TABLE business.person
+ADD CONSTRAINT address_p_fk FOREIGN KEY (address_id) REFERENCES business.address(address_id);
+
+ALTER TABLE business.votes
+ADD CONSTRAINT person_v_fk FOREIGN KEY (person_id) REFERENCES business.person(person_id);
+
+ALTER TABLE business.votes
+ADD CONSTRAINT group_v_fk FOREIGN KEY (group_id) REFERENCES business.election_groups(group_id);
+
+ALTER TABLE business.voting_places
+ADD CONSTRAINT address_vp_fk FOREIGN KEY (address_id) REFERENCES business.address(address_id);
+
+ALTER TABLE business.donations
+ADD CONSTRAINT person_d_fk FOREIGN KEY (person_id) REFERENCES business.person(person_id);
+
+ALTER TABLE business.donations
+ADD CONSTRAINT campaign_d_fk FOREIGN KEY (campaign_id) REFERENCES business.campaigns(campaign_id);
+
+
+-- adding record_ts to each table (a column that will record the time of insertion)
+ALTER TABLE business.costs
+ADD COLUMN record_ts DATE NOT NULL DEFAULT current_date;
+
+ALTER TABLE business.costs_events
+ADD COLUMN record_ts DATE NOT NULL DEFAULT current_date;
+
+ALTER TABLE business.events 
+ADD COLUMN record_ts DATE NOT NULL DEFAULT current_date;
+
+ALTER TABLE business.commission 
+ADD COLUMN record_ts DATE NOT NULL DEFAULT current_date;
+
+ALTER TABLE business.commission_person 
+ADD COLUMN record_ts DATE NOT NULL DEFAULT current_date;
+
+ALTER TABLE business.roles 
+ADD COLUMN record_ts DATE NOT NULL DEFAULT current_date;
+
+ALTER TABLE business.person_role 
+ADD COLUMN record_ts DATE NOT NULL DEFAULT current_date;
+
+ALTER TABLE business.person 
+ADD COLUMN record_ts DATE NOT NULL DEFAULT current_date;
+
+ALTER TABLE business.status 
+ADD COLUMN record_ts DATE NOT NULL DEFAULT current_date;
+
+ALTER TABLE business.votes 
+ADD COLUMN record_ts DATE NOT NULL DEFAULT current_date;
+
+ALTER TABLE business.voting_places 
+ADD COLUMN record_ts DATE NOT NULL DEFAULT current_date;
+
+ALTER TABLE business.donations
+ADD COLUMN record_ts DATE NOT NULL DEFAULT current_date;
+
+ALTER TABLE business.election_groups 
+ADD COLUMN record_ts DATE NOT NULL DEFAULT current_date;
+
+ALTER TABLE business.campaigns 
+ADD COLUMN record_ts DATE NOT NULL DEFAULT current_date;
+
+ALTER TABLE business.address
+ADD COLUMN record_ts DATE NOT NULL DEFAULT current_date;
